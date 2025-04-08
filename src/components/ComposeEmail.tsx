@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
-import { toast } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 
 const ComposeEmail = () => {
   const { composeOpen, closeCompose, sendEmail } = useEmail();
