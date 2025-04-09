@@ -27,6 +27,7 @@ const ComposeEmail = () => {
 
     toast.success('Email sent successfully');
     resetForm();
+    closeCompose();
   };
 
   const resetForm = () => {

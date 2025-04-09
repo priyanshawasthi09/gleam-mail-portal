@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Email, mockEmails, EmailFolder, mockFolders } from '@/lib/mockData';
+import { toast } from 'sonner';
 
 interface EmailContextProps {
   emails: Email[];
@@ -16,6 +17,7 @@ interface EmailContextProps {
   closeCompose: () => void;
   deleteEmail: (emailId: string) => void;
   sendEmail: (email: Partial<Email>) => void;
+  currentUserEmail: string; // Add current user email
 }
 
 const EmailContext = createContext<EmailContextProps | undefined>(undefined);
@@ -26,6 +28,8 @@ export const EmailProvider = ({ children }: { children: ReactNode }) => {
   const [currentFolder, setCurrentFolder] = useState('inbox');
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
   const [composeOpen, setComposeOpen] = useState(false);
+  // Current user email - in a real app this would come from auth
+  const currentUserEmail = 'demo@example.com';
 
   const selectEmail = (email: Email | null) => {
     setSelectedEmail(email);
@@ -61,7 +65,7 @@ export const EmailProvider = ({ children }: { children: ReactNode }) => {
       id: `email-${Date.now()}`,
       from: {
         name: 'Me',
-        email: 'demo@example.com',
+        email: currentUserEmail,
       },
       to: email.to || [],
       subject: email.subject || '(no subject)',
@@ -85,6 +89,7 @@ export const EmailProvider = ({ children }: { children: ReactNode }) => {
         currentFolder,
         selectedEmail,
         composeOpen,
+        currentUserEmail,
         setCurrentFolder,
         selectEmail,
         markAsRead,

@@ -7,17 +7,30 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const EmailList = () => {
-  const { emails, currentFolder, selectEmail, selectedEmail, toggleStarred } = useEmail();
+  const { 
+    emails, 
+    currentFolder, 
+    selectEmail, 
+    selectedEmail, 
+    toggleStarred,
+    currentUserEmail
+  } = useEmail();
 
-  // Filter emails based on current folder
+  // Filter emails based on current folder and user
   const filteredEmails = emails.filter(email => {
+    const isSender = email.from.email === currentUserEmail;
+    const isRecipient = email.to.includes(currentUserEmail);
+
     switch (currentFolder) {
       case 'inbox':
-        return true; // All emails in inbox for this demo
-      case 'starred':
-        return email.isStarred;
+        // In inbox, show only emails received by current user
+        return isRecipient && !isSender;
       case 'sent':
-        return email.from.email === 'demo@example.com';
+        // In sent, show only emails sent by current user
+        return isSender;
+      case 'starred':
+        // In starred, show starred emails relevant to the user
+        return email.isStarred && (isRecipient || isSender);
       case 'drafts':
         return false; // No drafts for this demo
       case 'spam':
@@ -74,7 +87,7 @@ const EmailList = () => {
                       "text-sm truncate",
                       !email.isRead && "font-semibold"
                     )}>
-                      {email.from.name}
+                      {currentFolder === 'sent' ? 'To: ' + email.to.join(', ') : email.from.name}
                     </p>
                     <p className="text-xs text-gray-500 whitespace-nowrap ml-2">
                       {formatEmailDate(email.timestamp)}
